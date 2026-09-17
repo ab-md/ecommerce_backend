@@ -9,7 +9,7 @@ const registerBodySchema = z.object({
     confirm_password: z.string("Enter confirm password")
 }).refine(data => data.password === data.confirm_password, {
     message: "Confirm password doesn't match",
-    path: ["confirmPassword"]
+    path: ["confirm_password"]
 }).strict();
 
 const sendCodeSchema = z.object({

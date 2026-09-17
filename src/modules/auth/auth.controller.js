@@ -1,5 +1,5 @@
 import authMessages from "./auth.messages.js";
-import { checkVerificaitionCodeService, registerService, sendVerificationCodeService } from "./auth.service.js";
+import { checkVerificationCodeService, registerService, sendVerificationCodeService } from "./auth.service.js";
 
 const register = async (req, res, next) => {
     try {
@@ -28,7 +28,7 @@ const sendVerificationCode = async (req, res, next) => {
 
 const checkVerificationCode = async (req, res, next) => {
     try {
-        await checkVerificaitionCodeService(req.body);
+        await checkVerificationCodeService(req.body);
         return res.status(200).json({
             statusCode: res.statusCode,
             message: authMessages.activated

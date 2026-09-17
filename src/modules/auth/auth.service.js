@@ -1,10 +1,11 @@
 import { createError } from "../../common/utils/createError.js";
 import { encryptPassword } from "../../common/utils/encryption.js";
-import transporter from "../../config/mailer.config.js";
+// import transporter from "../../config/mailer.config.js";
 import { VerificationCode } from "../users/other.models.js";
 import User from "../users/user.model.js";
 import { randomInt } from "crypto";
 import authMessages from "./auth.messages.js";
+import sendMail from "../../common/utils/mailer.js";
 
 const createVerificationCode = async (userId, userEmail) => {
     const code = randomInt(10000, 99999).toString();
@@ -16,12 +17,15 @@ const createVerificationCode = async (userId, userEmail) => {
     }
     await VerificationCode.create(codeInitialData);
 
-    await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: userEmail,
-        subject: "Email Verification",
-        text: `Your verification code is: ${code}`
-    });
+    // await transporter.sendMail({
+    //     from: process.env.EMAIL_USER,
+    //     to: userEmail,
+    //     subject: "Email Verification",
+    //     text: `Your verification code is: ${code}`
+    // });
+    const emailSubject = "Email Verification";
+    const emailText = `Your verification code is: ${code}`;
+    await sendMail(userEmail, emailSubject, emailText);
 }
 
 const sendVerificationCodeService = async (payload) => {
@@ -40,7 +44,7 @@ const sendVerificationCodeService = async (payload) => {
     await createVerificationCode(user._id, user.email);
 }
 
-const checkVerificaitionCodeService = async payload => {
+const checkVerificationCodeService = async payload => {
     const { email, code } = payload;
     const user = await User.findOne({ email });
     if (!user) throw createError(404, authMessages.notRegistered);
@@ -54,6 +58,10 @@ const checkVerificaitionCodeService = async payload => {
     await User.findOneAndUpdate({ email }, {
         $set: { verified: true }
     });
+    await VerificationCode.deleteOne({_id: sentCode._id});
+    const emailSubject = "Account Verified Successfully!";
+    const emailText = "Hello! Your account has been successfully verified. Welcome to our platform!";
+    await sendMail(email, emailSubject, emailText);
 }
 
 const registerService = async (payload) => {
@@ -72,5 +80,5 @@ const registerService = async (payload) => {
 export {
     registerService,
     sendVerificationCodeService,
-    checkVerificaitionCodeService,
+    checkVerificationCodeService,
 }
