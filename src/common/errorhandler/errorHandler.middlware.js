@@ -6,7 +6,10 @@ const notFound = (req, res, next) => {
 }
 
 const serverError = (err, req, res, next) => {
-    const statusCode = err.status || err.statusCode || err.code || 500;
+    let statusCode = err.status || err.statusCode || err.code || 500;
+     if (typeof statusCode !== 'number') {
+        statusCode = 500;
+    }
     return res.status(statusCode).json({
         statusCode,
         error: err.message || err.stack || "Internal Server Error"
