@@ -2,7 +2,9 @@ import z from "zod";
 
 const registerBodySchema = z.object({
     email: z.email("Invalid email type"),
-    password: z.string().min(6, "Password must have at least 6 characters").max(30, "Password can not be more than 30 characters")
+    password: z.string({ message: "Password is required" })
+        .min(6, "Password must have at least 6 characters")
+        .max(30, "Password can not be more than 30 characters")
         .regex(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&]).+$/, {
             message: "Password must include a special character and a number at least"
         }),
@@ -22,4 +24,14 @@ const checkCodeSchema = z.object({
         .regex(/^\d+$/, "Code must contain only digits")
 }).strict();
 
-export { registerBodySchema, sendCodeSchema, checkCodeSchema };
+const loginBodySchema = z.object({
+    email: z.email("Invalid email type"),
+    password: z.string("Password is required")
+        .min(6, "Password must have at least 6 characters")
+        .max(30, "Password can not be more than 30 characters")
+        .regex(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&]).+$/, {
+            message: "Password must include a special character and a number at least"
+        })
+}).strict();
+
+export { registerBodySchema, sendCodeSchema, checkCodeSchema, loginBodySchema };

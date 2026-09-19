@@ -1,11 +1,13 @@
 import { Router } from "express";
-import { checkVerificationCode, register, sendVerificationCode } from "./auth.controller.js";
-import { checkCodeValidation, registerDataValidation, sendCodeValidation } from "./auth.middlware.js";
+import { checkVerificationCode, login, register, sendVerificationCode } from "./auth.controller.js";
+import { validateData } from "../../common/middlewares/validate.middlware.js";
+import { checkCodeSchema, loginBodySchema, registerBodySchema, sendCodeSchema } from "./auth.validation.js";
 
 const router = Router();
 
-router.post("/register", registerDataValidation, register);
-router.post("/send-code", sendCodeValidation, sendVerificationCode);
-router.post("/check-code", checkCodeValidation, checkVerificationCode);
+router.post("/register", validateData(registerBodySchema), register);
+router.post("/send-code", validateData(sendCodeSchema), sendVerificationCode);
+router.post("/check-code", validateData(checkCodeSchema), checkVerificationCode);
+router.post("/login", validateData(loginBodySchema), login);
 
 export { router as authRoutes };
