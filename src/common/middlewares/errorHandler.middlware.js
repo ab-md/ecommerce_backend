@@ -12,7 +12,7 @@ const serverError = (err, req, res, next) => {
     }
     return res.status(statusCode).json({
         statusCode,
-        error: err.message || err.stack || "Internal Server Error"
+        message: err.message || err.stack || "Internal Server Error",
     })
 }
 
