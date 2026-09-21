@@ -41,7 +41,7 @@ const checkVerificationCodeService = async payload => {
     const sentCode = await VerificationCode.findOne({ user: user._id });
     if (!sentCode) throw createError(400, authMessages.codeNotSent);
     const now = new Date().getTime();
-    if (sentCode.expiresAt < now) throw createError(400, authMessages.codeExpired);
+    if (sentCode.expiresAt <= now) throw createError(400, authMessages.codeExpired);
     if (sentCode.code !== code) throw createError(400, authMessages.codeNotMatch);
     await User.findOneAndUpdate({ email }, {
         $set: { verified: true }

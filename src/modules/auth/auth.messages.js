@@ -9,7 +9,7 @@ const authMessages = {
     successLogin: "logged in to your account successfully",
     codeSent: "Verification code sent successfully",
     codeNotSent: "Verification code did not sent",
-    verified: "Your account verified successfully",
+    activated: "Your account verified successfully",
     notVerified: "Your account has not been verified yet.Please verify your account first",
     verified: "Your account is already verified",
     invalidData: "Invalid email or password",

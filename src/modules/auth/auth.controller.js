@@ -22,7 +22,7 @@ const login = async (req, res, next) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
-            maxAge: 1000 * 60 * 60 * 2
+            maxAge: 1000 * 60 * 60
         });
         return res.status(200).json({
             statusCode: res.statusCode,

@@ -12,7 +12,7 @@ const userSchema = new Schema({
     first_name: { type: String, trim: true },
     last_name: { type: String, trim: true },
     phone: { type: String, trim: true },
-    avatar: { type: String, default: "/uploads/users/avatar.png" },
+    avatar: { type: String, default: "/uploads/images/users/avatar.png" },
 }, {
     timestamps: true,
     versionKey: false
