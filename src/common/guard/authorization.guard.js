@@ -3,7 +3,7 @@ import { createError } from "../utils/createError.js";
 import { verifyToken } from "../utils/encryption.js";
 import guardMessages from "./guard.messages.js";
 
-const authorization = async (req, res, next) => {
+const authentication = async (req, res, next) => {
     try {
         const token = req?.cookies?.access_token;
         if (!token) return next(createError(401, guardMessages.notLogged));
@@ -18,13 +18,20 @@ const authorization = async (req, res, next) => {
     }
 }
 
+const authorization = (...roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) return next(createError(403, guardMessages.forbidden));
+        next();
+    }
+}
+
 const isLogged = async (req, res, next) => {
     try {
         const token = req?.cookies?.access_token;
         if (!token) return next(createError(401, guardMessages.notLogged));
         const tokenData = verifyToken(token);
         console.log(tokenData);
-        const user = await User.findOne({ emai: tokenData.email });
+        const user = await User.findOne({ email: tokenData.email });
         req.user = user;
         next();
     } catch (error) {
@@ -33,6 +40,7 @@ const isLogged = async (req, res, next) => {
 }
 
 export {
+    authentication,
     authorization,
     isLogged,
 }
