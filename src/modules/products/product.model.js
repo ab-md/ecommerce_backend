@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose"
 
+// === add creater Id ===//
 const productSchema = new Schema({
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
