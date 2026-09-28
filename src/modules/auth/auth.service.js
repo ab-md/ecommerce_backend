@@ -1,6 +1,6 @@
 import { createError } from "../../common/utils/createError.js";
 import { createToken, encryptPassword, verifyPassword } from "../../common/utils/encryption.js";
-import { VerificationCode } from "../users/other.models.js";
+import VerificationCode from "../users/verification.models.js";
 import User from "../users/user.model.js";
 import { randomInt } from "crypto";
 import authMessages from "./auth.messages.js";

@@ -7,8 +7,8 @@ const addressSchema = new Schema({
         required: true
     },
     title: { type: String, trim: true, required: true },
-    recevier_name: { type: String, trim: true, required: true },
-    phone: { type: String, trim: true, required: true },
+    reciever_name: { type: String, trim: true, required: true },
+    reciever_phone: { type: String, trim: true, required: true },
     province: { type: String, trim: true, required: true },
     city: { type: String, trim: true, required: true },
     address: { type: String, trim: true, required: true },
@@ -21,22 +21,4 @@ const addressSchema = new Schema({
 
 const Address = model("Address", addressSchema);
 
-const verificationCodeSchema = new Schema({
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true
-    },
-    code: { type: String },
-    expiresAt: { type: Date, required: true }
-}, {
-    timestamps: true,
-    versionKey: false
-});
-
-const VerificationCode = model("VerificationCode", verificationCodeSchema);
-
-export {
-    Address,
-    VerificationCode,
-}
+export default Address;
