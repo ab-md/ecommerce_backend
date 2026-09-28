@@ -22,6 +22,10 @@ const addressSchema = z.object({
         .trim(),
     postal_code: z.string("Postal code is required")
         .regex(/^\d{10}$/, "Postal code must be 10 digits"),
+    address: z.string("Address is required")
+        .min(10, "Address must have at least 10 characters")
+        .max(200, "Address can not be more than 200 characters")
+        .trim(),
     isDefault: z.boolean().optional(),
 }).strict();
 
@@ -47,6 +51,10 @@ const updateAddressSchema = z.object({
         .trim().optional(),
     postal_code: z.string("Postal code is required")
         .regex(/^\d{10}$/, "Postal code must be 10 digits").optional(),
+    address: z.string("Address is required")
+        .min(10, "Address must have at least 10 characters")
+        .max(200, "Address can not be more than 200 characters")
+        .trim().optional(),
     isDefault: z.boolean().optional(),
 }).strict();
 
