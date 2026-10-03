@@ -7,8 +7,8 @@ const addressSchema = new Schema({
         required: true
     },
     title: { type: String, trim: true, required: true },
-    reciever_name: { type: String, trim: true, required: true },
-    reciever_phone: { type: String, trim: true, required: true },
+    receiver_name: { type: String, trim: true, required: true },
+    receiver_phone: { type: String, trim: true, required: true },
     province: { type: String, trim: true, required: true },
     city: { type: String, trim: true, required: true },
     address: { type: String, trim: true, required: true },

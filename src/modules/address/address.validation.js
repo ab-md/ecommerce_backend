@@ -6,7 +6,7 @@ const addressSchema = z.object({
         .max(50, "Title can not be more than 50 characters")
         .trim(),
     receiver_name: z.string("Receiver name is required")
-        .min(5, "Receiver name must have at least 5 characters")
+        .min(3, "Receiver name must have at least 3 characters")
         .max(50, "Receiver name can not be more than 50 characters")
         .trim(),
     receiver_phone: z
