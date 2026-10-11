@@ -7,6 +7,13 @@ const createOrderSchema = z.object({
     addressId: objectId,
 }).strict();
 
+const orderStatusSchema = z.object({
+    status: z.enum(["pending", "processing", "shipped", "delivered", "cancelled"], {
+        errorMap: () => ({ message: "Invalid order status" })
+    })
+})
+
 export {
     createOrderSchema,
+    orderStatusSchema,
 }
