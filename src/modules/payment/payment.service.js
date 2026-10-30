@@ -16,6 +16,8 @@ const createPaymentService = async payload => {
     if (!order) throw createError(404, paymentMessages.notFoundOrder);
     if (order.user.toString() !== isUser._id.toString()) throw createError(403, paymentMessages.notAllowed);
     if (order.status !== "pending") throw createError(400, paymentMessages.invalidOrderStatus);
+    const existingPayment = await Payment.findOne({ order: orderId, status: "pending" });
+    if (existingPayment) return existingPayment;
     const paymentReslut = await Payment.create({ order: orderId });
     if (!paymentReslut) throw createError(500, paymentMessages.serverError);
     return paymentReslut;
@@ -91,7 +93,7 @@ const getUserPaymentByAdminService = async payload => {
     if (!user) throw createError(404, paymentMessages.notFoundUser);
     const payment = await Payment.findById(paymentId).populate("order");
     if (!payment || !payment.order) throw createError(404, paymentMessages.notFoundPayment);
-    if(payment.order.user.toString() !== userId) throw createError(404, paymentMessages.notFoundPayment);
+    if (payment.order.user.toString() !== userId) throw createError(404, paymentMessages.notFoundPayment);
     return payment;
 }
 

@@ -4,7 +4,7 @@ import { validateData } from "../../common/middlewares/validate.middlware.js";
 import { createPaymentSchema, paymentResultSchema } from "./payment.validation.js";
 import { createPayment, getAllPayments, getPaymentByAdmin, getUserPayment, getUserPaymentByAdmin, getUserPayments, getUserPaymentsByAdmin, paymentResult } from "./payment.controller.js";
 import idValidation from "../../common/middlewares/idValidationmiddleware.js";
-import multiIdValidation from "../../common/middlewares/multiIdValidation.middlware.js";
+import multiIdValidation from "../../common/middlewares/multiIdValidation.middleware.js";
 
 const router = Router();
 
