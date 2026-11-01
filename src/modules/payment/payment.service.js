@@ -1,6 +1,7 @@
 import { createError } from "../../common/utils/createError.js";
 import Cart from "../cart/cart.model.js";
 import Order from "../orders/order.model.js";
+import Product from "../products/product.model.js";
 import User from "../users/user.model.js";
 import paymentMessages from "./payment.messages.js";
 import Payment from "./payment.model.js";
@@ -36,6 +37,21 @@ const paymentResultService = async payload => {
     if (order.user.toString() !== isUser._id.toString()) throw createError(403, paymentMessages.notAllowed);
     if (order.status !== "pending") throw createError(400, paymentMessages.invalidOrderStatus);
     if (result === "success") {
+        for (const item of order.items) {
+            const product = await Product.findOneAndUpdate(
+                {
+                    _id: item.product,
+                    stock: { $gte: item.quantity }
+                },
+                {
+                    $inc: { stock: -item.quantity }
+                },
+                {
+                    returnDocument: "after"
+                }
+            );
+            if (!product) throw createError(404, paymentMessages.notFoundProduct);
+        };
         payment.status = "paid";
         order.status = "processing";
         await Cart.findOneAndDelete({ user: isUser._id });
