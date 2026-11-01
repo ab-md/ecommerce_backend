@@ -8,7 +8,7 @@ const createOrderSchema = z.object({
 }).strict();
 
 const orderStatusSchema = z.object({
-    status: z.enum(["pending", "processing", "shipped", "delivered", "cancelled"], {
+    status: z.enum(["pending", "processing", "shipped", "delivered", "canceled"], {
         errorMap: () => ({ message: "Invalid order status" })
     })
 })

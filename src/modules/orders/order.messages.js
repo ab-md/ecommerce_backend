@@ -4,10 +4,12 @@ const orderMessages = {
     notFoundProduct: "Product not found",
     notFoundAddress: "Address not found",
     notFoundOrder: "Order not found",
+    notFoundUser: "User not found",
     serverError: "Something went worng",
     orderCreated: "Order created successfully",
     updateOrderStatusSuccess: "Order status updated successfully",
     outOfStock: "We ran out of stock",
+    invalidOrderStatus: "Invalid order status",
 
 
     addSuccess: "Product added to cart successfully",
@@ -16,7 +18,6 @@ const orderMessages = {
     // updateSuccess: "Cart updated successfully",
     deleteSuccess: "Cart deleted successfully",
     invalidId: "Invalid Id",
-    notFoundUser: "User not found",
     notInCart: "This item does not exist in your cart",
 }
 

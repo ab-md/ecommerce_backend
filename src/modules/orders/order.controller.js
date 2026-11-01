@@ -1,5 +1,5 @@
 import orderMessages from "./order.messages.js";
-import { createOrderService, updateStatusService } from "./order.service.js";
+import { createOrderService, getOrderByAdminService, getOrdersByAdminService, getOrderService, getOrdersService, getUserOrderByAdminService, getUserOrdersByAdminService, updateStatusService } from "./order.service.js";
 
 const createOrder = async (req, res, next) => {
     try {
@@ -27,7 +27,85 @@ const updateStatus = async (req, res, next) => {
     }
 }
 
+const getOrders = async (req, res, next) => {
+    try {
+        const orders = await getOrdersService(req.user);
+        return res.status(200).json({
+            statusCode: 200,
+            data: orders
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+const getOrder = async (req, res, next) => {
+    try {
+        const order = await getOrderService(req);
+        return res.status(200).json({
+            statusCode: 200,
+            data: order
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+const getOrdersByAdmin = async (req, res, next) => {
+    try {
+        const orders = await getOrdersByAdminService();
+        return res.status(200).json({
+            statusCode: 200,
+            data: orders
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+const getOrderByAdmin = async (req, res, next) => {
+    try {
+        const order = await getOrderByAdminService(req.params);
+        return res.status(200).json({
+            statusCode: 200,
+            data: order
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+const getUserOrdersByAdmin = async (req, res, next) => {
+    try {
+        const orders = await getUserOrdersByAdminService(req.params);
+        return res.status(200).json({
+            statusCode: 200,
+            data: orders
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+const getUserOrderByAdmin = async (req, res, next) => {
+    try {
+        const order = await getUserOrderByAdminService(req.params);
+        return res.status(200).json({
+            statusCode: 200,
+            data: order
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
 export {
     createOrder,
     updateStatus,
+    getOrders,
+    getOrder,
+    getOrdersByAdmin,
+    getOrderByAdmin,
+    getUserOrdersByAdmin,
+    getUserOrderByAdmin
 }

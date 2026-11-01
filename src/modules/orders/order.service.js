@@ -59,15 +59,74 @@ const createOrderService = async payload => {
 
 const updateStatusService = async payload => {
     const { status } = payload.body;
-    const { orderId } = payload.params;
-    const statuses = ["processing", "shipped", "delivered", "canceled"];
-    const order = await Order.findOne({ _id: orderId, status: { $ne: "pending" } });
+    const { id: orderId } = payload.params;
+    const order = await Order.findById(orderId);
     if (!order) throw createError(404, orderMessages.notFoundOrder);
-    const statusIndex = statuses[status];
-    return statusIndex;
+    if (order.status === "pending") throw createError(400, orderMessages.invalidOrderStatus);
+    if (
+        (order.status === "processing" && ["shipped", "canceled"].includes(status)) ||
+        (order.status === "shipped" && status === "delivered")
+    ) {
+        order.status = status;
+    } else {
+        throw createError(400, orderMessages.invalidOrderStatus);
+    }
+    await order.save();
+    return order;
+}
+
+const getOrdersService = async payload => {
+    const user = payload;
+    const isUser = await User.findOne({ email: user.email });
+    if (!isUser) throw createError(401, orderMessages.notAuthorized);
+    const orders = await Order.find({ user: isUser._id }).populate("user", "first_name last_name email avatar phone").populate("items.product");
+    return orders;
+}
+
+const getOrderService = async payload => {
+    const { id: orderId } = payload.params;
+    const user = payload.user;
+    const isUser = await User.findOne({ email: user.email });
+    if (!isUser) throw createError(401, orderMessages.notAuthorized);
+    const order = await Order.findOne({ _id: orderId, user: isUser._id }).populate("user", "first_name last_name email avatar phone").populate("items.product");
+    if (!order) throw createError(404, orderMessages.notFoundOrder);
+    return order;
+}
+
+const getOrdersByAdminService = async () => {
+    const orders = await Order.find().populate("user", "first_name last_name email avatar phone").populate("items.product");
+    return orders;
+}
+
+const getOrderByAdminService = async payload => {
+    const { id: orderId } = payload;
+    const order = await Order.findById(orderId).populate("user", "first_name last_name email avatar phone").populate("items.product");
+    if (!order) throw createError(404, orderMessages.notFoundOrder);
+    return order;
+}
+
+const getUserOrdersByAdminService = async payload => {
+    const { userId } = payload;
+    const user = await User.findById(userId);
+    if(!user) throw createError(404, orderMessages.notFoundUser);
+    const orders = await Order.find({ user: userId }).populate("user", "first_name last_name email avatar phone").populate("items.product");
+    return orders;
+}
+
+const getUserOrderByAdminService = async payload => {
+    const { userId, orderId } = payload;
+    const order = await Order.findOne({ _id: orderId, user: userId }).populate("user", "first_name last_name email avatar phone").populate("items.product");
+    if (!order) throw createError(404, orderMessages.notFoundOrder);
+    return order;
 }
 
 export {
     createOrderService,
     updateStatusService,
+    getOrdersService,
+    getOrderService,
+    getOrdersByAdminService,
+    getOrderByAdminService,
+    getUserOrdersByAdminService,
+    getUserOrderByAdminService
 }
