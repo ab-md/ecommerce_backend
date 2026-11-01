@@ -6,7 +6,9 @@ const paymentMessages = {
     notFoundPayment: "Payment not found",
     notFoundUser: "User not found",
     notFoundProduct: "Product not found",
+    paymentCreated: "Payment created successfully",
     paymentSuccess: "Payment completed successfully",
+    paymentUpdated: "Payment updated successfully",
     invalidOrderStatus: "Invalid order status",
     invalidPaymentStatus: "Invalid payment status",
 }

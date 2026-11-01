@@ -6,7 +6,7 @@ const createPayment = async (req, res, next) => {
         const result = await createPaymentService(req);
         return res.status(201).json({
             statusCode: 201,
-            message: paymentMessages.paymentSuccess,
+            message: paymentMessages.paymentCreated,
             data: result
         });
     } catch (error) {
@@ -19,7 +19,7 @@ const paymentResult = async (req, res, next) => {
         const result = await paymentResultService(req);
         return res.status(200).json({
             statusCode: 200,
-            message: paymentMessages.paymentSuccess,
+            message: paymentMessages.paymentUpdated,
             data: result
         });
     } catch (error) {
