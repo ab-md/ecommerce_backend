@@ -75,6 +75,19 @@ const updateStatusService = async payload => {
     return order;
 }
 
+const cancelOrderService = async payload => {
+    const { id: orderId } = payload.params;
+    const user = payload.user;
+    const isUser = await User.findOne({ email: user.email });
+    if (!isUser) throw createError(401, orderMessages.notAuthorized);
+    const order = await Order.findOne({ _id: orderId, user: isUser._id });
+    if (!order) throw createError(404, orderMessages.notFoundOrder);
+    if (order.status !== "pending") throw createError(400, orderMessages.invalidOrderStatus);
+    order.status = "canceled";
+    await order.save();
+    return order;
+}
+
 const getOrdersService = async payload => {
     const user = payload;
     const isUser = await User.findOne({ email: user.email });
@@ -108,7 +121,7 @@ const getOrderByAdminService = async payload => {
 const getUserOrdersByAdminService = async payload => {
     const { userId } = payload;
     const user = await User.findById(userId);
-    if(!user) throw createError(404, orderMessages.notFoundUser);
+    if (!user) throw createError(404, orderMessages.notFoundUser);
     const orders = await Order.find({ user: userId }).populate("user", "first_name last_name email avatar phone").populate("items.product");
     return orders;
 }
@@ -123,6 +136,7 @@ const getUserOrderByAdminService = async payload => {
 export {
     createOrderService,
     updateStatusService,
+    cancelOrderService,
     getOrdersService,
     getOrderService,
     getOrdersByAdminService,

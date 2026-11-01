@@ -1,5 +1,5 @@
 import orderMessages from "./order.messages.js";
-import { createOrderService, getOrderByAdminService, getOrdersByAdminService, getOrderService, getOrdersService, getUserOrderByAdminService, getUserOrdersByAdminService, updateStatusService } from "./order.service.js";
+import { cancelOrderService, createOrderService, getOrderByAdminService, getOrdersByAdminService, getOrderService, getOrdersService, getUserOrderByAdminService, getUserOrdersByAdminService, updateStatusService } from "./order.service.js";
 
 const createOrder = async (req, res, next) => {
     try {
@@ -20,6 +20,19 @@ const updateStatus = async (req, res, next) => {
         return res.status(200).json({
             statusCode: 200,
             message: orderMessages.updateOrderStatusSuccess,
+            data: result
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+const cancelOrder = async (req, res, next) => {
+    try {
+        const result = await cancelOrderService(req);
+        return res.status(200).json({
+            statusCode: 200,
+            message: orderMessages.orderCanceled,
             data: result
         })
     } catch (error) {
@@ -102,6 +115,7 @@ const getUserOrderByAdmin = async (req, res, next) => {
 export {
     createOrder,
     updateStatus,
+    cancelOrder,
     getOrders,
     getOrder,
     getOrdersByAdmin,

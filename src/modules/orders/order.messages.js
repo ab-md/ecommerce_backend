@@ -8,17 +8,9 @@ const orderMessages = {
     serverError: "Something went worng",
     orderCreated: "Order created successfully",
     updateOrderStatusSuccess: "Order status updated successfully",
+    orderCanceled: "Order canceled successfully",
     outOfStock: "We ran out of stock",
     invalidOrderStatus: "Invalid order status",
-
-
-    addSuccess: "Product added to cart successfully",
-    decreaseSuccess: "Product decreased from cart successfully",
-    removeSuccess: "Product removed from cart successfully",
-    // updateSuccess: "Cart updated successfully",
-    deleteSuccess: "Cart deleted successfully",
-    invalidId: "Invalid Id",
-    notInCart: "This item does not exist in your cart",
 }
 
 export default orderMessages;

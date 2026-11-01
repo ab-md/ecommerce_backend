@@ -1,14 +1,15 @@
 import { Router } from "express";
 import { authentication, authorization } from "../../common/guard/authorization.guard.js";
-import { createOrderSchema, orderStatusSchema } from "./order.validation.js";
+import { cancelOrderSchema, createOrderSchema, orderStatusSchema } from "./order.validation.js";
 import { validateData } from "../../common/middlewares/validate.middlware.js";
-import { createOrder, getOrder, getOrderByAdmin, getOrders, getOrdersByAdmin, getUserOrderByAdmin, getUserOrdersByAdmin, updateStatus } from "./order.controller.js";
+import { cancelOrder, createOrder, getOrder, getOrderByAdmin, getOrders, getOrdersByAdmin, getUserOrderByAdmin, getUserOrdersByAdmin, updateStatus } from "./order.controller.js";
 import idValidation from "../../common/middlewares/idValidationmiddleware.js";
 import multiIdValidation from "../../common/middlewares/multiIdValidation.middleware.js";
 
 const router = Router();
 
 router.post("/", authentication, validateData(createOrderSchema), createOrder);
+router.patch("/:id/cancel", authentication, idValidation, cancelOrder);
 router.patch("/:id",
     authentication, authorization("admin", "manager"),
     idValidation,
