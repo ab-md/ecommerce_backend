@@ -12,7 +12,7 @@ router.get("/protected/:id", authentication, authorization("admin", "manager"), 
 router.post("/", authentication, validateData(addressSchema), createAddress);
 router.put("/:id", authentication, validateData(updateAddressSchema), idValidation, updateAddress);
 router.delete("/:id", authentication, idValidation, deleteAddress);
-router.get("", authentication, getAddresses);
+router.get("/", authentication, getAddresses);
 router.get("/:id", authentication, idValidation, getAddress);
 
 export { router as addressRoutes }
