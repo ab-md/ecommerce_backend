@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authentication, authorization } from "../../common/guard/authorization.guard.js";
-import { cancelOrderSchema, createOrderSchema, orderStatusSchema } from "./order.validation.js";
+import { createOrderSchema, orderStatusSchema } from "./order.validation.js";
 import { validateData } from "../../common/middlewares/validate.middlware.js";
 import { cancelOrder, createOrder, getOrder, getOrderByAdmin, getOrders, getOrdersByAdmin, getUserOrderByAdmin, getUserOrdersByAdmin, updateStatus } from "./order.controller.js";
 import idValidation from "../../common/middlewares/idValidationmiddleware.js";
