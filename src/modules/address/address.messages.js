@@ -7,6 +7,7 @@ const addressMessages = {
     serverError: "Something went worng",
     invalidId: "Invalid Id",
     notFoundAddress: "Address not found",
+    notFoundUser: "User not found",
 }
 
 export default addressMessages;

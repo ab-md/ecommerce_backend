@@ -113,6 +113,23 @@ const getAddressesByAdminService = async () => {
     return addresses;
 }
 
+const getUserAddressesByAdminService = async payload => {
+    const { id: userId } = payload;
+    const user = await User.findById(userId);
+    if (!user) throw createError(404, addressMessages.notFoundUser);
+    const addresses = await Address.find({ user: user._id });
+    return addresses;
+}
+
+const getUserAddressByAdminService = async payload => {
+    const { userId, addressId } = payload;
+    const user = await User.findById(userId);
+    if (!user) throw createError(404, addressMessages.notFoundUser);
+    const address = await Address.findOne({ user: user._id, _id: addressId });
+    if (!address) throw createError(404, addressMessages.notFoundAddress);
+    return address;
+}
+
 export {
     createAddressService,
     updateAddressService,
@@ -121,4 +138,6 @@ export {
     getAddressesService,
     getAddressByAdminService,
     getAddressesByAdminService,
+    getUserAddressesByAdminService,
+    getUserAddressByAdminService
 }

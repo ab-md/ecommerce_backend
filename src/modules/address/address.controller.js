@@ -1,5 +1,5 @@
 import addressMessages from "./address.messages.js";
-import { createAddressService, deleteAddressService, getAddressByAdminService, getAddressesByAdminService, getAddressesService, getAddressService, updateAddressService } from "./address.service.js";
+import { createAddressService, deleteAddressService, getAddressByAdminService, getAddressesByAdminService, getAddressesService, getAddressService, getUserAddressByAdminService, getUserAddressesByAdminService, updateAddressService } from "./address.service.js";
 
 const createAddress = async (req, res, next) => {
     try {
@@ -86,6 +86,30 @@ const getAddressesByAdmin = async (req, res, next) => {
     }
 }
 
+const getUserAddresses = async (req, res, next) => {
+    try {
+        const addresses = await getUserAddressesByAdminService(req.params);
+        return res.status(200).json({
+            statusCode: 200,
+            data: addresses
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+const getUserAddress = async (req, res, next) => {
+    try {
+        const address = await getUserAddressByAdminService(req.params);
+        return res.status(200).json({
+            statusCode: 200,
+            data: address
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
 export {
     createAddress,
     updateAddress,
@@ -94,4 +118,6 @@ export {
     getAddressByAdmin,
     getAddresses,
     getAddressesByAdmin,
+    getUserAddresses,
+    getUserAddress
 }
