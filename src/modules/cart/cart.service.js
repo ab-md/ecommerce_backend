@@ -11,7 +11,7 @@ const addToCartService = async payload => {
     if (!existingUser) throw createError(401, cartMessages.notAuthorized);
     const product = await Product.findOne({ _id: productId, isActive: true });
     if (!product) throw createError(404, cartMessages.notFoundProduct);
-    if (product.stock === 0) throw createError(403, cartMessages.outOfStock);
+    if (product.stock === 0) throw createError(400, cartMessages.outOfStock);
     const initialData = {
         user: existingUser._id,
         items: {
@@ -27,7 +27,7 @@ const addToCartService = async payload => {
     }
     const existingCartItem = existingCart.items.find(item => item.product.toString() === productId);
     if (existingCartItem) {
-        if (existingCartItem.quantity >= product.stock) throw createError(403, cartMessages.outOfStock);
+        if (existingCartItem.quantity >= product.stock) throw createError(400, cartMessages.outOfStock);
         existingCartItem.quantity += 1;
     } else {
         existingCart.items.push({
@@ -48,11 +48,18 @@ const removeFromCartService = async payload => {
     const product = await Product.findById(productId);
     if (!product) throw createError(404, cartMessages.notFoundProduct);
     const userCart = await Cart.findOne({ user: existingUser._id });
-    if (!userCart || userCart.items.length === 0) throw createError(403, cartMessages.emptyCart);
+    if (!userCart || userCart.items.length === 0) throw createError(400, cartMessages.emptyCart);
     const existingCartItem = userCart.items.find(item => item.product.toString() === productId);
-    if (!existingCartItem) throw createError(403, cartMessages.notInCart);
+    if (!existingCartItem) throw createError(404, cartMessages.notInCart);
     existingCartItem.quantity -= 1;
-    if (existingCartItem.quantity === 0) userCart.items.remove(existingCartItem);
+    if (existingCartItem.quantity === 0) {
+        userCart.items.remove(existingCartItem);
+        if (!userCart.items.length) {
+            // const result = await userCart.deleteOne();
+            const result = await Cart.findOneAndDelete({ user: existingUser._id });
+            return result;
+        }
+    }
     const result = await userCart.save();
     if (!result) throw createError(500, cartMessages.serverError);
     return result;
@@ -66,10 +73,16 @@ const removeItemService = async payload => {
     const product = await Product.findById(productId);
     if (!product) throw createError(404, cartMessages.notFoundProduct);
     const userCart = await Cart.findOne({ user: existingUser._id });
-    if (!userCart || userCart.items.length === 0) throw createError(403, cartMessages.emptyCart);
+    if (!userCart || userCart.items.length === 0) throw createError(400, cartMessages.emptyCart);
     const cartItem = userCart.items.find(item => item.product.toString() === productId);
-    if (!cartItem) throw createError(403, cartMessages.notInCart);
+    if (!cartItem) throw createError(404, cartMessages.notInCart);
     userCart.items.remove(cartItem);
+    if (!userCart.items.length) {
+        // const result = await userCart.deleteOne();
+        const result = await Cart.findOneAndDelete({ user: existingUser._id });
+        if (!result) throw createError(500, cartMessages.serverError);
+        return result;
+    }
     const result = await userCart.save();
     if (!result) throw createError(500, cartMessages.serverError);
     return result;
