@@ -1,4 +1,5 @@
-import { getUserByAdminService, getUserInfoService, getUsersByAdminService } from "./user.service.js";
+import userMessages from "./user.messages.js";
+import { getUserByAdminService, getUserInfoService, getUsersByAdminService, updateProfileService } from "./user.service.js";
 
 const getUsersByAdmin = async (req, res, next) => {
     try {
@@ -36,8 +37,22 @@ const getUserInfo = async (req, res, next) => {
     }
 }
 
+const updateProfile = async (req, res, next) => {
+    try {
+        const result = await updateProfileService(req);
+        return res.status(200).json({
+            statusCode: 200,
+            message: userMessages.updateSuccess,
+            data: result
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
 export {
     getUsersByAdmin,
     getUserByAdmin,
     getUserInfo,
+    updateProfile,
 }
