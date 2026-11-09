@@ -45,8 +45,6 @@ const removeFromCartService = async payload => {
     const user = payload.user;
     const existingUser = await User.findOne({ email: user.email });
     if (!existingUser) throw createError(401, cartMessages.notAuthorized);
-    const product = await Product.findById(productId);
-    if (!product) throw createError(404, cartMessages.notFoundProduct);
     const userCart = await Cart.findOne({ user: existingUser._id });
     if (!userCart || userCart.items.length === 0) throw createError(400, cartMessages.emptyCart);
     const existingCartItem = userCart.items.find(item => item.product.toString() === productId);
@@ -55,9 +53,9 @@ const removeFromCartService = async payload => {
     if (existingCartItem.quantity === 0) {
         userCart.items.remove(existingCartItem);
         if (!userCart.items.length) {
-            // const result = await userCart.deleteOne();
             const result = await Cart.findOneAndDelete({ user: existingUser._id });
-            return result;
+            if (!result) throw createError(500, cartMessages.serverError);
+            return { result: "Cart deleted" };
         }
     }
     const result = await userCart.save();
@@ -70,18 +68,15 @@ const removeItemService = async payload => {
     const user = payload.user;
     const existingUser = await User.findOne({ email: user.email });
     if (!existingUser) throw createError(401, cartMessages.notAuthorized);
-    const product = await Product.findById(productId);
-    if (!product) throw createError(404, cartMessages.notFoundProduct);
     const userCart = await Cart.findOne({ user: existingUser._id });
     if (!userCart || userCart.items.length === 0) throw createError(400, cartMessages.emptyCart);
     const cartItem = userCart.items.find(item => item.product.toString() === productId);
     if (!cartItem) throw createError(404, cartMessages.notInCart);
     userCart.items.remove(cartItem);
     if (!userCart.items.length) {
-        // const result = await userCart.deleteOne();
         const result = await Cart.findOneAndDelete({ user: existingUser._id });
         if (!result) throw createError(500, cartMessages.serverError);
-        return result;
+        return { result: "Cart deleted" };
     }
     const result = await userCart.save();
     if (!result) throw createError(500, cartMessages.serverError);
