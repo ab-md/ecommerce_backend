@@ -1,5 +1,5 @@
 import userMessages from "./user.messages.js";
-import { getUserByAdminService, getUserInfoService, getUsersByAdminService, updateProfileService } from "./user.service.js";
+import { changePasswordService, getUserByAdminService, getUserInfoService, getUsersByAdminService, updateProfileService } from "./user.service.js";
 
 const getUsersByAdmin = async (req, res, next) => {
     try {
@@ -50,9 +50,28 @@ const updateProfile = async (req, res, next) => {
     }
 }
 
+const changePassword = async (req, res, next) => {
+    try {
+        const token = await changePasswordService(req);
+        res.cookie("access_token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 1000 * 60 * 60
+        });
+        return res.status(200).json({
+            statusCode: 200,
+            message: userMessages.successPasswordChange
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
 export {
     getUsersByAdmin,
     getUserByAdmin,
     getUserInfo,
     updateProfile,
+    changePassword,
 }

@@ -11,6 +11,7 @@ const authentication = async (req, res, next) => {
         if (typeof tokenData !== "object") return next(createError(401, guardMessages.invalidToken));
         const user = await User.findOne({ email: tokenData?.email });
         if (!user) return next(createError(404, guardMessages.notFound));
+        if (tokenData.tokenVersion !== user.tokenVersion) return next(createError(401, guardMessages.invalidToken));
         req.user = user;
         next();
     } catch (error) {

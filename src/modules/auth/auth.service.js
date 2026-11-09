@@ -75,7 +75,8 @@ const loginService = async payload => {
     const tokenData = {
         id: user._id,
         email: user.email,
-        role: user.role
+        role: user.role,
+        tokenVersion: user.tokenVersion
     }
     const token = createToken(tokenData);
     return token;

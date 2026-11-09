@@ -13,6 +13,10 @@ const userSchema = new Schema({
     last_name: { type: String, trim: true },
     phone: { type: String, trim: true },
     avatar: { type: String, default: "/uploads/images/users/avatar.png" },
+    tokenVersion: {
+        type: Number,
+        default: 0
+    }
 }, {
     timestamps: true,
     versionKey: false
