@@ -6,17 +6,14 @@ import Address from "./address.model.js";
 const createAddressService = async payload => {
     let { title, province, city, receiver_phone, receiver_name, address, postal_code, isDefault } = payload.body;
     const user = payload.user;
-    if (!user) throw createError(401, addressMessages.notAuthorized);
-    const existingUser = await User.findOne({ email: user.email });
-    if (!existingUser) throw createError(401, addressMessages.notAuthorized);
     if (!receiver_name) {
-        receiver_name = [existingUser.first_name, existingUser.last_name].filter(Boolean).join(" ");
+        receiver_name = [user.first_name, user.last_name].filter(Boolean).join(" ");
     }
-    if (existingUser.phone && !receiver_phone) receiver_phone = existingUser.phone;
-    const existingDefaulAddress = await Address.findOne({ user: existingUser._id, isDefault: true });
+    if (user.phone && !receiver_phone) receiver_phone = user.phone;
+    const existingDefaulAddress = await Address.findOne({ user: user._id, isDefault: true });
     isDefault = existingDefaulAddress ? false : true;
     const initialData = {
-        user: existingUser._id,
+        user: user._id,
         title,
         receiver_name,
         receiver_phone,
@@ -35,10 +32,7 @@ const updateAddressService = async payload => {
     let { title, province, city, receiver_phone, receiver_name, address: addressData, postal_code, isDefault } = payload.body;
     const { id: addressId } = payload.params;
     const user = payload.user;
-    if (!user) throw createError(401, addressMessages.notAuthorized);
-    const existingUser = await User.findOne({ email: user.email });
-    if (!existingUser) throw createError(401, addressMessages.notAuthorized);
-    const address = await Address.findOne({ _id: addressId, user: existingUser._id });
+    const address = await Address.findOne({ _id: addressId, user: user._id });
     if (!address) throw createError(404, addressMessages.notFoundAddress);
     const updateData = {}
     if (title !== undefined) updateData.title = title;
@@ -56,7 +50,7 @@ const updateAddressService = async payload => {
     if (updateResult.isDefault === true) {
         try {
             const oldDefaultAddress = await Address.findOne({
-                user: existingUser._id,
+                user: user._id,
                 isDefault: true,
                 _id: { $ne: addressId }
             });
@@ -74,9 +68,7 @@ const updateAddressService = async payload => {
 const deleteAddressService = async payload => {
     const { id } = payload.params;
     const user = payload.user;
-    const isUser = await User.findOne({ email: user.email });
-    if (!isUser) throw createError(401, addressMessages.notAuthorized);
-    const address = await Address.findOne({ user: isUser._id, _id: id });
+    const address = await Address.findOne({ user: user._id, _id: id });
     if (!address) throw createError(404, addressMessages.notFoundAddress);
     const result = await Address.findByIdAndDelete(id, { returnDocument: "after" });
     if (!result) throw createError(500, addressMessages.serverError);
@@ -86,9 +78,7 @@ const deleteAddressService = async payload => {
 const getAddressService = async payload => {
     const { id } = payload.params;
     const user = payload.user;
-    const isUser = await User.findOne({ email: user.email });
-    if (!isUser) throw createError(401, addressMessages.notAuthorized);
-    const address = await Address.findOne({ user: isUser._id, _id: id });
+    const address = await Address.findOne({ user: user._id, _id: id });
     if (!address) throw createError(404, addressMessages.notFoundAddress);
     return address;
 }
@@ -102,9 +92,7 @@ const getAddressByAdminService = async payload => {
 
 const getAddressesService = async payload => {
     const user = payload;
-    const isUser = await User.findOne({ email: user.email });
-    if (!isUser) throw createError(401, addressMessages.notAuthorized);
-    const addresses = await Address.find({ user: isUser._id });
+    const addresses = await Address.find({ user: user._id });
     return addresses;
 }
 

@@ -7,19 +7,17 @@ import cartMessages from "./cart.messages.js";
 const addToCartService = async payload => {
     const { productId } = payload.body;
     const user = payload.user;
-    const existingUser = await User.findOne({ email: user.email });
-    if (!existingUser) throw createError(401, cartMessages.notAuthorized);
     const product = await Product.findOne({ _id: productId, isActive: true });
     if (!product) throw createError(404, cartMessages.notFoundProduct);
     if (product.stock === 0) throw createError(400, cartMessages.outOfStock);
     const initialData = {
-        user: existingUser._id,
+        user: user._id,
         items: {
             product: productId,
             quantity: 1
         }
     }
-    const existingCart = await Cart.findOne({ user: existingUser._id });
+    const existingCart = await Cart.findOne({ user: user._id });
     if (!existingCart) {
         const result = await Cart.create(initialData);
         if (!result) throw createError(500, cartMessages.serverError);
@@ -43,9 +41,7 @@ const addToCartService = async payload => {
 const removeFromCartService = async payload => {
     const { productId } = payload.body;
     const user = payload.user;
-    const existingUser = await User.findOne({ email: user.email });
-    if (!existingUser) throw createError(401, cartMessages.notAuthorized);
-    const userCart = await Cart.findOne({ user: existingUser._id });
+    const userCart = await Cart.findOne({ user: user._id });
     if (!userCart || userCart.items.length === 0) throw createError(400, cartMessages.emptyCart);
     const existingCartItem = userCart.items.find(item => item.product.toString() === productId);
     if (!existingCartItem) throw createError(404, cartMessages.notInCart);
@@ -53,7 +49,7 @@ const removeFromCartService = async payload => {
     if (existingCartItem.quantity === 0) {
         userCart.items.remove(existingCartItem);
         if (!userCart.items.length) {
-            const result = await Cart.findOneAndDelete({ user: existingUser._id });
+            const result = await Cart.findOneAndDelete({ user: user._id });
             if (!result) throw createError(500, cartMessages.serverError);
             return { result: "Cart deleted" };
         }
@@ -66,15 +62,13 @@ const removeFromCartService = async payload => {
 const removeItemService = async payload => {
     const { productId } = payload.body;
     const user = payload.user;
-    const existingUser = await User.findOne({ email: user.email });
-    if (!existingUser) throw createError(401, cartMessages.notAuthorized);
-    const userCart = await Cart.findOne({ user: existingUser._id });
+    const userCart = await Cart.findOne({ user: user._id });
     if (!userCart || userCart.items.length === 0) throw createError(400, cartMessages.emptyCart);
     const cartItem = userCart.items.find(item => item.product.toString() === productId);
     if (!cartItem) throw createError(404, cartMessages.notInCart);
     userCart.items.remove(cartItem);
     if (!userCart.items.length) {
-        const result = await Cart.findOneAndDelete({ user: existingUser._id });
+        const result = await Cart.findOneAndDelete({ user: user._id });
         if (!result) throw createError(500, cartMessages.serverError);
         return { result: "Cart deleted" };
     }
@@ -85,9 +79,7 @@ const removeItemService = async payload => {
 
 const getCartByUserService = async payload => {
     const user = payload;
-    const existingUser = await User.findOne({ email: user.email });
-    if (!existingUser) throw createError(401, cartMessages.notAuthorized);
-    const userCart = await Cart.findOne({ user: existingUser._id });
+    const userCart = await Cart.findOne({ user: user._id });
     if (!userCart) throw createError(404, cartMessages.emptyCart);
     return userCart;
 }

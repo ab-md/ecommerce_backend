@@ -9,11 +9,9 @@ import Order from "./order.model.js";
 const createOrderService = async payload => {
     const { addressId } = payload.body;
     const user = payload.user;
-    const isUser = await User.findOne({ email: user.email });
-    if (!isUser) throw createError(401, orderMessages.notAuthorized);
-    const cart = await Cart.findOne({ user: isUser._id });
+    const cart = await Cart.findOne({ user: user._id });
     if (!cart || !cart.items.length) throw createError(403, orderMessages.emptyCart);
-    const address = await Address.findOne({ _id: addressId, user: isUser._id });
+    const address = await Address.findOne({ _id: addressId, user: user._id });
     if (!address) throw createError(404, orderMessages.notFoundAddress);
     const orderItemsPromise = cart.items.map(async item => {
         const product = await Product.findOne({ _id: item.product, isActive: true });
@@ -45,13 +43,12 @@ const createOrderService = async payload => {
         postal_code: address.postal_code
     }
     const orderData = {
-        user: isUser._id,
+        user: user._id,
         items: orderItems,
         shippingAddress,
         totalPrice,
         status: "pending"
     }
-    // return orderData;
     const createOrder = await Order.create(orderData);
     if (!createOrder) throw createError(500, orderMessages.serverError);
     return createOrder;
@@ -78,9 +75,7 @@ const updateStatusService = async payload => {
 const cancelOrderService = async payload => {
     const { id: orderId } = payload.params;
     const user = payload.user;
-    const isUser = await User.findOne({ email: user.email });
-    if (!isUser) throw createError(401, orderMessages.notAuthorized);
-    const order = await Order.findOne({ _id: orderId, user: isUser._id });
+    const order = await Order.findOne({ _id: orderId, user: user._id });
     if (!order) throw createError(404, orderMessages.notFoundOrder);
     if (order.status !== "pending") throw createError(400, orderMessages.invalidOrderStatus);
     order.status = "canceled";
@@ -90,18 +85,14 @@ const cancelOrderService = async payload => {
 
 const getOrdersService = async payload => {
     const user = payload;
-    const isUser = await User.findOne({ email: user.email });
-    if (!isUser) throw createError(401, orderMessages.notAuthorized);
-    const orders = await Order.find({ user: isUser._id }).populate("user", "first_name last_name email avatar phone").populate("items.product");
+    const orders = await Order.find({ user: user._id }).populate("user", "first_name last_name email avatar phone").populate("items.product");
     return orders;
 }
 
 const getOrderService = async payload => {
     const { id: orderId } = payload.params;
     const user = payload.user;
-    const isUser = await User.findOne({ email: user.email });
-    if (!isUser) throw createError(401, orderMessages.notAuthorized);
-    const order = await Order.findOne({ _id: orderId, user: isUser._id }).populate("user", "first_name last_name email avatar phone").populate("items.product");
+    const order = await Order.findOne({ _id: orderId, user: user._id }).populate("user", "first_name last_name email avatar phone").populate("items.product");
     if (!order) throw createError(404, orderMessages.notFoundOrder);
     return order;
 }

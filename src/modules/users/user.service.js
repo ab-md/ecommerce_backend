@@ -25,18 +25,16 @@ const getUserInfoService = async payload => {
 const updateProfileService = async payload => {
     const { first_name, last_name, phone } = payload.body;
     const user = payload.user;
-    const isUser = await User.findOne({ email: user.email });
-    if (!isUser) throw createError(401, userMessages.notAuthorized);
     const file = payload.file;
     const avatar = !!file ? file.path.replaceAll("\\", "/").replace("public", "") : "/uploads/images/users/avatar.png"
     const updateData = {};
-    if (!isUser.first_name && !first_name) throw createError(400, userMessages.requiredName);
-    if (!isUser.phone && !phone) throw createError(400, userMessages.requiredPhone);
+    if (!user.first_name && !first_name) throw createError(400, userMessages.requiredName);
+    if (!user.phone && !phone) throw createError(400, userMessages.requiredPhone);
     if (first_name !== undefined) updateData.first_name = first_name;
     if (last_name !== undefined) updateData.last_name = last_name;
     if (phone !== undefined) updateData.phone = phone;
     if (!!file) updateData.avatar = avatar;
-    const updateResult = await User.findByIdAndUpdate(isUser._id, {
+    const updateResult = await User.findByIdAndUpdate(user._id, {
         $set: updateData
     }, { returnDocument: "after" }).select("-password -createdAt -updatedAt");
     if (!updateResult) throw createError(500, userMessages.serverError);
