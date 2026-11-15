@@ -7,6 +7,7 @@ const rateLimiter = (time, amount) => {
         standardHeaders: true,
         legacyHeaders: false,
         ipv6Subnet: 56,
+        message: "Too many requests.Please try again later."
     })
 }
 
