@@ -6,6 +6,7 @@ import { notFound, serverError } from "./src/common/middlewares/errorHandler.mid
 import connectDB from "./src/config/database.config.js";
 import { routes } from "./src/index.route.js";
 import cookieParser from "cookie-parser";
+import rateLimiter from "./src/common/middlewares/limiter.middleware.js";
 
 const app = express();
 // dotenv.config();
@@ -14,6 +15,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cookieParser());
+
+app.use(rateLimiter(15 * 60 * 1000, 100));
 
 app.use(routes);
 
