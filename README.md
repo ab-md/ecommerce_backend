@@ -1,4 +1,3 @@
-::: {align="center"}
 # E-Commerce Backend API
 
 A RESTful backend for an e-commerce application, built with **Node.js**,
