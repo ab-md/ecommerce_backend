@@ -22,11 +22,29 @@ const login = async (req, res, next) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
+            path: "/",
             maxAge: 1000 * 60 * 60
         });
         return res.status(200).json({
             statusCode: res.statusCode,
             message: authMessages.successLogin
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+const logout = (req, res, next) => {
+    try {
+        res.clearCookie("access_token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/"
+        });
+        return res.status(200).json({
+            statusCode: 200,
+            message: authMessages.successLogout
         })
     } catch (error) {
         next(error);
@@ -60,6 +78,7 @@ const checkVerificationCode = async (req, res, next) => {
 export {
     register,
     login,
+    logout,
     sendVerificationCode,
     checkVerificationCode,
 }

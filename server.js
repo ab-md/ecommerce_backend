@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import cors from "cors";
 // import dotenv from "dotenv";
 import mongoose from "mongoose";
 import { notFound, serverError } from "./src/common/middlewares/errorHandler.middlware.js";
@@ -11,6 +12,13 @@ import rateLimiter from "./src/common/middlewares/limiter.middleware.js";
 const app = express();
 // dotenv.config();
 
+const corsOptions = {
+    origin: process.env.CORS_ORIGIN,
+    // optionsSuccessStatus: 200,
+    credentials: true
+}
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));

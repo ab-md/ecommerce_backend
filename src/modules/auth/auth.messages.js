@@ -7,6 +7,7 @@ const authMessages = {
     serverError: "Something went wrong",
     successRegister: "Registered successfully.Check your email and enter verification code",
     successLogin: "logged in to your account successfully",
+    successLogout: "logged out from your account successfully",
     codeSent: "Verification code sent successfully",
     codeNotSent: "Verification code did not sent",
     activated: "Your account verified successfully",
